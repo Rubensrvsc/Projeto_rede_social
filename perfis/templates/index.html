@@ -33,9 +33,9 @@
                             <a href = "{% url 'exibir' perfil.id %}">
                                 {{ perfil }}
                             </a>
-                            <!--<a class="pull-right" href="{% url 'desfazer' perfil.id %}">
+                            <a class="pull-right" href="{% url 'desfazer' perfil.id %}">
                                 desfazer amizade
-                            </a>-->
+                            </a>
                         </li>
                     {% endfor %}
                 </ul>
@@ -64,9 +64,9 @@
                                         {{convite.solicitante.nome}}
                                     </a>
                                 </li>
-                                <!--<li class = "list-inline-item pull-right">
+                                <li class = "list-inline-item pull-right">
                                     <a href = "{% url 'recusar' convite.id %}">recusar</a>
-                                </li>-->
+                                </li>
                                 <li class = "list-inline-item pull-right">
                                     <a href = "{% url 'aceitar' convite.id %}">aceitar</a>
                                 </li>
@@ -80,6 +80,11 @@
                 </div>    
             {% endif %}
         {% endwith %}    
-    </div>    
+    </div>
+    <div class="panel panel-default">
+    <div class="panel-body">
+        <a href = "{% url 'timeline'%}">Ver timeline</a>
+    </div> 
+    </div>
 </div>
 {% endblock %}

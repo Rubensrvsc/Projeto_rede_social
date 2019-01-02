@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block body %}
+{% if perfil|length > 0 %}
+    {% for p in perfil %}
+    <h3>Nome do usuario</h3>
+        <p>{{p.nome}}</p>
+    <h3>Nome da empresa</h3>
+        <p>{{p.nome_empresa}}</p>
+    {%endfor%}
+{% else %}
+    <p>sem perfis</p>
+{%endif%}
+{%endblock%}

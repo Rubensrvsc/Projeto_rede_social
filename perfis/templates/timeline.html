@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block body %}
+<html>
+    <head></head>
+    <body>
+        <h3>Posts</h3>
+            {% for p in posts.all %}
+                <div>
+                <h2>{{p.texto}}</h2>
+                <p>{{p.data}}</p>
+                <a href="{% url 'excluir_post' p.id %}">Deletar Post</a>
+                </div>
+            {% endfor %}
+        <a href="{% url 'incluir_post' %}">Adicionar</a>
+        <a href="{% url 'index' %}">Voltar ao inicio</a>
+    </body>
+</html>
+{%endblock%}
