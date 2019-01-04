@@ -33,7 +33,7 @@ def convidar(request,perfil_id):
 
 @login_required
 def get_perfil_logado(request):
-	#if request.user.is_authenticated: 
+	#if request.user.is_authenticated:
 	profile=request.user.perfil
 	return profile
 	#else: 
@@ -106,6 +106,16 @@ def incluir_post(request):
 def excluir_post(request,id_post):
     Post.objects.filter(id=id_post).delete()
     return redirect('timeline')
+
+@login_required
+def is_super_user(request,perfil_id):
+    if request.user.is_superuser==True:
+    	perfil=Perfil.objects.get(id=perfil_id)
+    	perfil.super_user()
+    	perfil.save()
+    	return redirect('index')
+    else:
+    	return render(request,'erro.html')
     
 def recuperar_senha(request):
     '''O usuario fornece o email e nome e o sistema busca no banco o seu registro

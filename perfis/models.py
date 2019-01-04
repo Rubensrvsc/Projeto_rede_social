@@ -20,6 +20,9 @@ class Perfil(models.Model):
         #if self.pode_convidar(perfil_convidado):
         convite = Convite(solicitante=self,convidado = perfil_convidado)
         convite.save()
+    
+    def super_user(self):
+        self.usuario.is_superuser=True
 
     def desfazer(self,perfil):
         self.contatos.remove(perfil)
