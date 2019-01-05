@@ -93,13 +93,9 @@
 		<ul class="list-group">
 			{% for perfil in perfis %}
 				<li class="list-group-item">
-                    {% if perfil.usuario.is_superuser is True %}
-					<p>	{{ perfil.nome }} / is super user ? {{perfil.usuario.is_superuser}}
-					</p>
-                    {%elif perfil.usuario.is_superuser is False%}
                     <a href = "{% url 'superuser' perfil.id %}">	{{ perfil.nome }} / {{ perfil.email }}
+                    / is super user ? {{perfil.usuario.is_superuser}}
 					</a>
-                    {%endif%}	
 				</li>
 			{% endfor %}
 		{% else %}	
