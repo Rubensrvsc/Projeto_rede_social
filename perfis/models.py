@@ -7,7 +7,9 @@ class Perfil(models.Model):
     telefone = models.CharField(max_length=20, null= False)
     nome_empresa = models.CharField(max_length=255, null=False)
     contatos = models.ManyToManyField('Perfil')
-    usuario = models.OneToOneField(User, related_name="perfil", on_delete = models.CASCADE,default="", editable=False) 
+    photo = models.ImageField(upload_to='', null=True, blank = True)
+    usuario = models.OneToOneField(User, related_name="perfil", on_delete = models.CASCADE,default="", editable=False)
+
 
     def __str__(self):
         return self.nome
