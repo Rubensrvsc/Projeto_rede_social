@@ -86,5 +86,23 @@
         <a href = "{% url 'timeline'%}">Ver timeline</a>
     </div> 
     </div>
+    <div class="panel panel-default">
+    <div class="panel-body">
+    <h4> Setar super user</h4>
+        {% if perfis %}
+		<ul class="list-group">
+			{% for perfil in perfis %}
+				<li class="list-group-item">
+                    <a href = "{% url 'superuser' perfil.id %}">	{{ perfil.nome }} / {{ perfil.email }}
+                    / is super user ? {{perfil.usuario.is_superuser}}
+					</a>
+				</li>
+			{% endfor %}
+		{% else %}	
+			<p>Não há perfis cadastrados</p>
+		{% endif %}
+		</ul>
+    </div> 
+    </div>
 </div>
 {% endblock %}
