@@ -6,3 +6,8 @@ class PostForm(ModelForm):
     class Meta:
         model=Post
         fields=('texto',)
+
+class PhotoPerfil(ModelForm):
+    class Meta:
+        model = Perfil
+        fields = ['photo']
