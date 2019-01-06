@@ -18,6 +18,10 @@ from django.urls import path,include
 from perfis import views 
 from usuarios.views import RegistarUsuarioView
 from django.contrib.auth import views as v
+from django.conf.urls import url
+from django.urls import reverse_lazy
+from django.contrib.auth.views import (PasswordResetView,PasswordResetDoneView,
+PasswordResetConfirmView,PasswordResetCompleteView)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,7 +32,6 @@ urlpatterns = [
     path('convite/<int:convite_id>/recusar',views.recusar, name='recusar'),
     path('convite/<int:perfil_id>/desfazer',views.desfazer_amizade, name='desfazer'),
     path('registrar/',RegistarUsuarioView.as_view(),name='registrar'),
-    path('perfil/mudar_senha',views.mudar_senha,name='mudar_senha'),
     path('perfil/alterar_senha',views.alterar_senha,name='alterar_senha'),
     path('login/', v.LoginView.as_view(template_name='login.html'), name = 'login'), 
     path('logout/', v.LogoutView.as_view(template_name='login.html'), name="logout"),
@@ -39,4 +42,15 @@ urlpatterns = [
     path('perfil/<int:id_post>/excluir',views.excluir_post,name='excluir_post'),
     path('', include('django.contrib.auth.urls')),
     path('perfil/<int:perfil_id>/super_user',views.is_super_user,name='superuser'),
+
+     url(r'^reset-password/$', PasswordResetView.as_view( template_name='reset_password.html',
+    success_url=reverse_lazy('password_reset_done'),email_template_name ='reset_password_email.html'), name='reset_password'),
+
+    url(r'^reset-password/done/$', PasswordResetDoneView.as_view(template_name= 'reset_password_done.html'), name='password_reset_done'),
+
+    url(r'^reset-password/confirm/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$', PasswordResetConfirmView.as_view( template_name='reset_password_confirm.html',
+    success_url=reverse_lazy('password_reset_complete')), name='password_reset_confirm'),
+
+    url(r'^reset-password/complete/$', PasswordResetCompleteView.as_view(template_name= 'reset_password_complete.html'), name='password_reset_complete')
+
 ]

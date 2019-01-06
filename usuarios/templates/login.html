@@ -12,6 +12,9 @@
 Por favor, verifique o Email e/ou Senha informados 
 </div> 
 {% endif %} 
-<a href="{% url 'registrar' %}">registre-se</a> 
+<ul class="nav navbar-nav">
+<li><a href="{% url 'registrar' %}">registre-se</a></li> 
+    <li><a href="{% url 'reset_password' %}">Recuperar senha</a></li>
+</ul>
 </form>
 {% endblock %}

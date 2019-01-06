@@ -5,7 +5,9 @@ from django.contrib.auth.decorators import login_required
 # Create your views here.
 from django.http import HttpResponseNotFound,HttpResponseRedirect
 from .forms import *
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout,update_session_auth_hash
+from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
+from django.urls import reverse
 
 @login_required
 def index(request):
@@ -59,19 +61,20 @@ def desfazer_amizade(request,perfil_id):
 
 @login_required
 def alterar_senha(request):
-	return render(request,'alterar_senha.html')
-	'''buscar a senha do usuario, mostrar e mandar ele
-	digitar uma nova senha para ser salva'''
-@login_required
-def mudar_senha(request):
-	senha=request.GET['nova_senha']
-	perfil=request.user
-	perfil.set_password(senha)
-	#perfil.usuario.password=senha
-	perfil.save()
-	perfil_autenticado=authenticate(username=request.user.username,password=senha)
-	login(request,perfil_autenticado)
-	return redirect('index')
+    if request.method == 'POST':
+        form = PasswordChangeForm(data=request.POST, user=request.user)
+
+        if form.is_valid():
+            form.save()
+            update_session_auth_hash(request, form.user)
+            return redirect(reverse('index'))
+        else:
+            return redirect(reverse('alterar_senha'))
+    else:
+        form = PasswordChangeForm(user=request.user)
+
+        args = {'form': form}
+        return render(request, 'alterar_senha.html', args)
 
 @login_required
 def pesquisar(request):
