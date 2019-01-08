@@ -42,6 +42,8 @@ urlpatterns = [
     path('perfil/<int:id_post>/excluir',views.excluir_post,name='excluir_post'),
     path('', include('django.contrib.auth.urls')),
     path('perfil/<int:perfil_id>/super_user',views.is_super_user,name='superuser'),
+    path('<int:perfil_id>/bloquear', views.bloquear_usuario, name='bloquear'),
+    path('<int:perfil_id>/desbloquear', views.desbloquear_usuario, name='desbloquear'),
 
      url(r'^reset-password/$', PasswordResetView.as_view( template_name='reset_password.html',
     success_url=reverse_lazy('password_reset_done'),email_template_name ='reset_password_email.html'), name='reset_password'),

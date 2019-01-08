@@ -4,6 +4,7 @@
     <head></head>
     <body>
         <h3>Posts</h3>
+        {%if posts|length > 0%}
             {% for p in posts %}
                 <div>
                 <h2>{{p.texto}}</h2>
@@ -27,8 +28,12 @@
                     </script>
                 </div>
             {% endfor %}
+         <a href="{% url 'incluir_post' %}">Adicionar</a>
+        <a href="{% url 'index' %}">Voltar ao inicio</a>
+            {%else%}
         <a href="{% url 'incluir_post' %}">Adicionar</a>
         <a href="{% url 'index' %}">Voltar ao inicio</a>
+        {%endif%}
     </body>
 </html>
 {%endblock%}

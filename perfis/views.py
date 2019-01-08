@@ -16,11 +16,11 @@ def index(request):
 @login_required
 def exibir_perfil(request, perfil_id):
 
-	perfil = Perfil.objects.get(id=perfil_id)
-
-	return render(request, 'perfil.html',
-		          {'perfil' : perfil, 
-				   'perfil_logado' : get_perfil_logado(request)})
+        perfil = Perfil.objects.get(id=perfil_id)
+        if not request.user.perfil in perfil.bloq.all():
+            return render(request, 'perfil.html',{'perfil' : perfil, 'perfil_logado' : get_perfil_logado(request)})
+        else:
+            return redirect('index')
 
 @login_required
 def convidar(request,perfil_id):
@@ -128,6 +128,14 @@ def is_super_user(request,perfil_id):
     else:
     	return render(request,'erro.html')
     
-def recuperar_senha(request):
-    '''O usuario fornece o email e nome e o sistema busca no banco o seu registro
-	para mudança de senha'''
+@login_required
+def bloquear_usuario(request, perfil_id):
+    perfil = Perfil.objects.get(id=perfil_id)
+    request.user.perfil.bloquear(perfil)
+    return redirect('index')
+
+@login_required
+def desbloquear_usuario(request,perfil_id):
+    perfil = Perfil.objects.get(id=perfil_id)
+    request.user.perfil.desbloquear(perfil)
+    return redirect('index')
