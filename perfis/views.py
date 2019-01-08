@@ -89,8 +89,16 @@ def realizar_pesquisa(request):
 
 @login_required
 def exibir_timeline(request):
-    posts=request.user.perfil.timeline
-    return render(request,'timeline.html',{'posts':posts})
+    posts = [post for post in request.user.perfil.timeline.all()]
+    usuarioLogado = request.user.perfil
+    print(posts)
+    contatos = request.user.perfil.contatos.all()
+    for contato in contatos:
+        for post in contato.timeline.all():
+            posts.append(post)
+
+    return render(request, 'timeline.html', {'posts': posts, 'usuarioLogado': usuarioLogado})
+
 
 @login_required
 def incluir_post(request):
