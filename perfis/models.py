@@ -26,6 +26,7 @@ class Perfil(models.Model):
     
     def super_user(self):
         self.usuario.is_superuser=True
+        self.usuario.save()
 
     def desfazer(self,perfil):
         self.contatos.remove(perfil)

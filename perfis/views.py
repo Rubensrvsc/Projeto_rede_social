@@ -123,7 +123,6 @@ def is_super_user(request,perfil_id):
     if request.user.is_superuser==True:
     	perfil=Perfil.objects.get(id=perfil_id)
     	perfil.super_user()
-    	perfil.save()
     	return redirect('index')
     else:
     	return render(request,'erro.html')
