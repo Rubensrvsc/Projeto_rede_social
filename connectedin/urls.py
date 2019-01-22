@@ -44,6 +44,8 @@ urlpatterns = [
     path('perfil/<int:perfil_id>/super_user',views.is_super_user,name='superuser'),
     path('<int:perfil_id>/bloquear', views.bloquear_usuario, name='bloquear'),
     path('<int:perfil_id>/desbloquear', views.desbloquear_usuario, name='desbloquear'),
+    path('perfil/desativar',views.desativa_perfil,name='desativar_perfil'),
+    path('perfil/reativar',views.reativar_perfil,name='reativar_perfil'),
 
      url(r'^reset-password/$', PasswordResetView.as_view( template_name='reset_password.html',
     success_url=reverse_lazy('password_reset_done'),email_template_name ='reset_password_email.html'), name='reset_password'),

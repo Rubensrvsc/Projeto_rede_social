@@ -1,5 +1,15 @@
 {% extends 'base.html' %}
 {% block body %}
+{% if usuarioLogado.is_ativo is False %}
+<div class="col-lg-12"> 		
+	<div class="panel panel-default">
+    <div class="panel-heading">
+    <p>Conta Desativada</p>
+    </div>
+    </div>
+    </div>
+    <a href="{% url 'reativar_conta' %}">Reativar conta</a>
+{%else%}
 <div class="col-lg-12"> 		
 	<div class="panel panel-default">
     <div class="panel-heading">
@@ -45,6 +55,7 @@
         {%endif%}
     </div>
 </div>
+	
 <div class="col-lg-12"> 		
 	<div class="panel panel-default">
 		<div class="panel-heading">
@@ -101,7 +112,9 @@
         
     </div>    
 </nav>
-    <div class="panel panel-default">
+    <div class="col-lg-12"> 		
+	<div class="panel panel-default">
+		<div class="panel-heading">		
         {% with total=usuarioLogado.convites_recebidos.count %}
 
             {% if total %}
@@ -134,13 +147,9 @@
                 </div>    
             {% endif %}
         {% endwith %}    
-    </div>
-    {% if usuarioLogado.usuario.is_superuser is True %}
-    <div class="panel panel-default">
-    <div class="panel-body">
-        <a href = "{% url 'timeline'%}">Ver timeline</a>
-    </div> 
-    {%endif%}
+		</div>
+        </div>
+        </div>
     </div>
     <div class="panel panel-default">
     <div class="panel-body">
@@ -161,4 +170,10 @@
     </div> 
     </div>
 </div>
+{%endif%}
+<style>
+aside{
+    float: right;
+}
+</style>
 {% endblock %}

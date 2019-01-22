@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container">
+    <h1>Desativar Conta</h1>
+    <p>
+    Forneça uma justificativa para desativar a conta
+</p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Desative a conta</button>
+    </form>
+</div>
+{% endblock %}

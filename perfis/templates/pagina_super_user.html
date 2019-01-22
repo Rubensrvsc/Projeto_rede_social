@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block body %}
+{% if usuarioLogado.is_ativo is False %}
+<div class="col-lg-12"> 		
+	<div class="panel panel-default">
+    <div class="panel-heading">
+    <p>Conta Desativada</p>
+    </div>
+    </div>
+    </div>
+    <a href="{% url 'reativar_perfil' %}">Reativar conta</a>
+{%else%}
+<div class="col-lg-12"> 		
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<strong>Todos os perfis</strong>
+		</div>
+        <br>
+    <head></head>
+		{% if perfis %}
+		<ul class="list-group">
+			{% for perfil in perfis %}
+				<li class="list-group-item">
+					<a href = "{% url 'exibir' perfil.id %}">	{{ perfil.nome }} / {{ perfil.email }}
+					</a>
+                    {% if not perfil in user.perfil.bloq.all%}
+                        <a href="{% url 'bloquear' perfil.id %}">Bloquear usuário</a>
+                    {%else%}
+                    <a href="{% url 'desbloquear' perfil.id %}">Desbloquear usuario</a>
+		            {% endif %}		
+				</li>
+                
+			{% endfor %}
+		{% else %}	
+			<p>Não há perfis cadastrados</p>
+		{% endif %}
+		</ul>
+	</div>	
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <a href = "{% url 'timeline'%}">Ver timeline</a>
+    </div> 
+</div>
+
+    <div class="panel panel-default">
+        {% with total=usuarioLogado.contatos.count %}
+            {% if total %}
+                <div class="panel-heading">
+                    <strong> {{ total }}  
+                        Contato{{ total|pluralize }}
+                    </strong>
+                </div>
+                <ul class="list-group">
+                    {% for perfil in usuarioLogado.contatos.all %}
+                        <li class = "list-group-item">
+                            <a href = "{% url 'exibir' perfil.id %}">
+                                {{ perfil }}
+                            </a>
+                            <a class="pull-right" href="{% url 'desfazer' perfil.id %}">
+                                desfazer amizade
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div class="panel-body">
+                    Não há contatos :(
+                </div>    
+            {% endif %}
+        {% endwith %}   
+    </div>    
+{%endif%}
+{%endblock%}
