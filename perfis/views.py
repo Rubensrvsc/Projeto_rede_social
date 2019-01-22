@@ -8,10 +8,22 @@ from .forms import *
 from django.contrib.auth import authenticate, login, logout,update_session_auth_hash
 from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
 from django.urls import reverse
+from django.core.mail import send_mail
+from django.contrib import messages
+from django.conf import settings
 
 @login_required
 def index(request):
-	return render(request, 'index.html',{'perfis' : Perfil.objects.all(),'perfil_logado' : get_perfil_logado(request)})
+    posts = [post for post in request.user.perfil.timeline.all()]
+    usuarioLogado = request.user.perfil
+    print(posts)
+    contatos = request.user.perfil.contatos.all()
+    for contato in contatos:
+        for post in contato.timeline.all():
+            posts.append(post)
+
+    return render(request, 'index.html',{'perfis' : Perfil.objects.all(),
+    'posts':posts, 'usuarioLogado': usuarioLogado})
 
 @login_required
 def exibir_perfil(request, perfil_id):
@@ -116,7 +128,7 @@ def incluir_post(request):
 @login_required
 def excluir_post(request,id_post):
     Post.objects.filter(id=id_post).delete()
-    return redirect('timeline')
+    return redirect('index')
 
 @login_required
 def is_super_user(request,perfil_id):
@@ -138,3 +150,8 @@ def desbloquear_usuario(request,perfil_id):
     perfil = Perfil.objects.get(id=perfil_id)
     request.user.perfil.desbloquear(perfil)
     return redirect('index')
+
+@login_required
+def password_reset_confirm(request,uidb,token):
+    send_mail('Subject here', 'mensagem', settings.EMAIL_HOST_USER,
+          [request.user.email], fail_silently=False)
