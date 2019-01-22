@@ -19,6 +19,14 @@ class Perfil(models.Model):
     def email(self): 
         return self.usuario.email
 
+    def desativar(self):
+        self.is_ativo=False
+        self.save()
+
+    def reativar(self):
+        self.is_ativo=True
+        self.save()
+
     def convidar(self, perfil_convidado):
         #if self.pode_convidar(perfil_convidado):
         convite = Convite(solicitante=self,convidado = perfil_convidado)

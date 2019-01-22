@@ -14,16 +14,20 @@ from django.conf import settings
 
 @login_required
 def index(request):
-    posts = [post for post in request.user.perfil.timeline.all()]
     usuarioLogado = request.user.perfil
-    print(posts)
-    contatos = request.user.perfil.contatos.all()
-    for contato in contatos:
-        for post in contato.timeline.all():
-            posts.append(post)
+    if request.user.is_superuser is True:
+        return render(request,'pagina_super_user.html',{'perfis':Perfil.objects.all()
+        ,'usuarioLogado': usuarioLogado})
+    else:
+        posts = [post for post in request.user.perfil.timeline.all()]
+        print(posts)
+        contatos = request.user.perfil.contatos.all()
+        for contato in contatos:
+            for post in contato.timeline.all():
+                posts.append(post)
 
-    return render(request, 'index.html',{'perfis' : Perfil.objects.all(),
-    'posts':posts, 'usuarioLogado': usuarioLogado})
+        return render(request, 'index.html',{'perfis' : Perfil.objects.all(),
+        'posts':posts, 'usuarioLogado': usuarioLogado})
 
 @login_required
 def exibir_perfil(request, perfil_id):
@@ -101,15 +105,18 @@ def realizar_pesquisa(request):
 
 @login_required
 def exibir_timeline(request):
-    posts = [post for post in request.user.perfil.timeline.all()]
-    usuarioLogado = request.user.perfil
-    print(posts)
-    contatos = request.user.perfil.contatos.all()
-    for contato in contatos:
-        for post in contato.timeline.all():
-            posts.append(post)
+    if request.user.is_superuser is True:
+        posts = [post for post in request.user.perfil.timeline.all()]
+        usuarioLogado = request.user.perfil
+        print(posts)
+        contatos = request.user.perfil.contatos.all()
+        for contato in contatos:
+            for post in contato.timeline.all():
+                posts.append(post)
 
-    return render(request, 'timeline.html', {'posts': posts, 'usuarioLogado': usuarioLogado})
+        return render(request, 'timeline.html', {'posts': posts, 'usuarioLogado': usuarioLogado})
+    else:
+        return render(request,'erro.html')
 
 
 @login_required
@@ -155,3 +162,23 @@ def desbloquear_usuario(request,perfil_id):
 def password_reset_confirm(request,uidb,token):
     send_mail('Subject here', 'mensagem', settings.EMAIL_HOST_USER,
           [request.user.email], fail_silently=False)
+
+@login_required
+def desativa_perfil(request):
+    form = JustificativaForm(request.POST)
+
+    if request.method == 'POST':
+        if form.is_valid():
+            request.user.perfil.desativar()
+            instance = form.save(commit=False)
+            instance.perfil = request.user.perfil
+            instance.perfil.save()
+            return redirect('index')
+    else:
+        form = JustificativaForm()
+    return render(request,'justificativa.html',{'form':form})
+
+@login_required
+def reativar_perfil(request):
+    request.user.perfil.reativar()
+    return redirect('index')
