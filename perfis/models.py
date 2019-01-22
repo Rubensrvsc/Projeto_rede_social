@@ -10,7 +10,7 @@ class Perfil(models.Model):
     photo = models.ImageField(upload_to='', null=True, blank = True)
     bloq = models.ManyToManyField('Perfil',related_name='bloqueado',null=True, blank=True)
     usuario = models.OneToOneField(User, related_name="perfil", on_delete = models.CASCADE,default="", editable=False)
-
+    is_ativo = models.BooleanField(default=True)
 
     def __str__(self):
         return self.nome
@@ -45,7 +45,6 @@ class Perfil(models.Model):
             return
         else:
             self.bloq.remove(perfil)
-            self.convidar(perfil)
             self.save()
 
     def remove(self,perfil):
@@ -71,3 +70,7 @@ class Post(models.Model):
     texto = models.CharField(max_length=140)
     data = models.DateTimeField(auto_now=True)
     timeline = models.ForeignKey(Perfil, related_name = 'timeline' ,on_delete = models.CASCADE)
+
+class Status(models.Model):
+    perfil = models.OneToOneField(Perfil,on_delete=models.CASCADE)
+    justificativa = models.CharField(max_length=256)
