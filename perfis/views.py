@@ -11,6 +11,7 @@ from django.urls import reverse
 from django.core.mail import send_mail
 from django.contrib import messages
 from django.conf import settings
+from django.core.paginator import Paginator
 
 @login_required
 def index(request):
@@ -19,13 +20,14 @@ def index(request):
         return render(request,'pagina_super_user.html',{'perfis':Perfil.objects.all()
         ,'usuarioLogado': usuarioLogado})
     else:
-        posts = [post for post in request.user.perfil.timeline.all()]
-        print(posts)
+        post = [post for post in request.user.perfil.timeline.all()]
         contatos = request.user.perfil.contatos.all()
         for contato in contatos:
-            for post in contato.timeline.all():
-                posts.append(post)
-
+            for p in contato.timeline.all():
+                post.append(p)
+        paginator = Paginator(post,2)
+        page = request.GET.get('page')
+        posts=paginator.get_page(page)
         return render(request, 'index.html',{'perfis' : Perfil.objects.all(),
         'posts':posts, 'usuarioLogado': usuarioLogado})
 
@@ -106,14 +108,15 @@ def realizar_pesquisa(request):
 @login_required
 def exibir_timeline(request):
     if request.user.is_superuser is True:
-        posts = [post for post in request.user.perfil.timeline.all()]
+        post = [post for post in request.user.perfil.timeline.all()]
         usuarioLogado = request.user.perfil
-        print(posts)
         contatos = request.user.perfil.contatos.all()
         for contato in contatos:
-            for post in contato.timeline.all():
-                posts.append(post)
-
+            for p in contato.timeline.all():
+                post.append(p)
+        paginator = Paginator(post,2)
+        page = request.GET.get('page')
+        posts=paginator.get_page(page)
         return render(request, 'timeline.html', {'posts': posts, 'usuarioLogado': usuarioLogado})
     else:
         return render(request,'erro.html')
