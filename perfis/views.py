@@ -16,11 +16,11 @@ def index(request):
 @login_required
 def exibir_perfil(request, perfil_id):
 
-	perfil = Perfil.objects.get(id=perfil_id)
-
-	return render(request, 'perfil.html',
-		          {'perfil' : perfil, 
-				   'perfil_logado' : get_perfil_logado(request)})
+    perfil = Perfil.objects.get(id=perfil_id)
+    if not request.user.perfil in perfil.bloq.all():
+        return render(request, 'perfil.html',{'perfil' : perfil, 'perfil_logado' : get_perfil_logado(request)})
+    else:
+        return redirect('index')
 
 @login_required
 def convidar(request,perfil_id):
@@ -85,12 +85,18 @@ def realizar_pesquisa(request):
 	nome=request.GET['nome']
 	perfis = Perfil.objects.filter(nome__contains=nome)
 	return render(request,'mostrar_pesquisa.html',{'perfil':perfis})
-	pass
 
 @login_required
 def exibir_timeline(request):
-    posts=request.user.perfil.timeline
-    return render(request,'timeline.html',{'posts':posts})
+    posts = [post for post in request.user.perfil.timeline.all()]
+    usuarioLogado = request.user.perfil
+    print(posts)
+    contatos = request.user.perfil.contatos.all()
+    for contato in contatos:
+        for post in contato.timeline.all():
+            posts.append(post)
+
+    return render(request, 'timeline.html', {'posts': posts, 'usuarioLogado': usuarioLogado})
 
 @login_required
 def incluir_post(request):
@@ -114,12 +120,22 @@ def excluir_post(request,id_post):
 def is_super_user(request,perfil_id):
     if request.user.is_superuser==True:
     	perfil=Perfil.objects.get(id=perfil_id)
-    	perfil.super_user()
-    	perfil.save()
+    	perfil.super_user().save()
+        #perfil.save()
     	return redirect('index')
     else:
     	return render(request,'erro.html')
+
+@login_required
+def bloquear_usuario(request, perfil_id):
+    perfil = Perfil.objects.get(id=perfil_id)
+    request.user.perfil.bloquear(perfil)
     
-def recuperar_senha(request):
-    '''O usuario fornece o email e nome e o sistema busca no banco o seu registro
-	para mudança de senha'''
+    return redirect('index')
+
+@login_required
+def desbloquear_usuario(request,perfil_id):
+    perfil = Perfil.objects.get(id=perfil_id)
+    request.user.perfil.desbloquear(perfil)
+    return redirect('index')
+

@@ -10,7 +10,12 @@
 			{% for perfil in perfis %}
 				<li class="list-group-item">
 					<a href = "{% url 'exibir' perfil.id %}">	{{ perfil.nome }} / {{ perfil.email }}
-					</a>	
+					</a>
+                    {% if not perfil in user.perfil.bloq.all%}
+                        <a href="{% url 'bloquear' perfil.id %}" class="btn btn-sm btn-secondary">Bloquear usuário</a>
+                    {%else%}
+                    <a href="{% url 'desbloquear' perfil.id %}">Desbloquear usuario</a>
+		            {% endif %}	
 				</li>
 			{% endfor %}
 		{% else %}	

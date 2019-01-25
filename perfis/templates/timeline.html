@@ -4,12 +4,16 @@
     <head></head>
     <body>
         <h3>Posts</h3>
-            {% for p in posts.all %}
+            {%if posts|length > 0%}
+            {% for p in posts %}
                 <div>
                 <h2>{{p.texto}}</h2>
                 <p>{{p.data}}</p>
-                <a href="{% url 'excluir_post' p.id %}">Deletar Post</a>
-                    <button onclick="confirmarDelete()">Deletar postagem</button>
+                <!--<a href="{% url 'excluir_post' p.id %}">Deletar Post</a>-->
+                    {% if p in usuarioLogado.timeline.all %}
+                        <button onclick="confirmarDelete()">Deletar postagem</button>
+
+                    {% endif %}
 
                     <script>
                         function confirmarDelete()
@@ -24,8 +28,12 @@
                     </script>
                 </div>
             {% endfor %}
+            <a href="{% url 'incluir_post' %}">Adicionar</a>
+        <a href="{% url 'index' %}">Voltar ao inicio</a>
+            {%else%}
         <a href="{% url 'incluir_post' %}">Adicionar</a>
         <a href="{% url 'index' %}">Voltar ao inicio</a>
+        {%endif%}
     </body>
 </html>
 {%endblock%}

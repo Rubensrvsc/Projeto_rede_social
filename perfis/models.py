@@ -8,6 +8,7 @@ class Perfil(models.Model):
     nome_empresa = models.CharField(max_length=255, null=False)
     contatos = models.ManyToManyField('Perfil')
     photo = models.ImageField(upload_to='', null=True, blank = True)
+    bloq = models.ManyToManyField('Perfil',related_name='bloqueado',null=True, blank=True)
     usuario = models.OneToOneField(User, related_name="perfil", on_delete = models.CASCADE,default="", editable=False)
 
 
@@ -25,10 +26,27 @@ class Perfil(models.Model):
     
     def super_user(self):
         self.usuario.is_superuser=True
+        self.save()
 
     def desfazer(self,perfil):
         self.contatos.remove(perfil)
         perfil.contatos.remove(self)
+
+    def bloquear(self,perfil):
+        if perfil==self:
+            return
+        else:
+            self.bloq.add(perfil)
+            self.desfazer(perfil)
+            self.save()
+    
+    def desbloquear(self,perfil):
+        if perfil==self:
+            return
+        else:
+            self.bloq.remove(perfil)
+            self.convidar(perfil)
+            self.save()
 
     def remove(self,perfil):
         pass
