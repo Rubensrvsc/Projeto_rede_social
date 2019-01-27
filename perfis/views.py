@@ -120,6 +120,7 @@ def pesquisar(request):
 def adicionar_foto(request):
     perfil = request.user.perfil
     perfil.photo = request.GET['photo']
+    perfil.save()
     return redirect('index')
 
 @login_required
