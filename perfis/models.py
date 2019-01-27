@@ -85,6 +85,7 @@ class Convite(models.Model):
 class Post(models.Model):
     texto = models.CharField(max_length=140)
     data = models.DateTimeField(auto_now=True)
+    photo_post = models.ImageField(upload_to='',null=True, blank = True)
     timeline = models.ForeignKey(Perfil, related_name = 'timeline' ,on_delete = models.CASCADE)
 
 class Status(models.Model):

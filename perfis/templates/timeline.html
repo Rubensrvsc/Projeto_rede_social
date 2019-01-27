@@ -14,6 +14,7 @@
                     <hr style="height:2px; border:none; color:#000; background-color:#000; margin-top: 10px; margin-bottom: 0px;">
                 <h2>{{p.texto}}</h2>
                 <p>{{p.data}}</p>
+                <p><img src="{{ p.photo_post.url}}" height="100"></p>
                 <!--<a href="{% url 'excluir_post' p.id %}">Deletar Post</a>-->
                     {% if p in usuarioLogado.timeline.all %}
                         <button onclick="confirmarDelete()">Deletar postagem</button>
@@ -41,11 +42,31 @@
                 </div>
             {% endfor %}
 <<<<<<< HEAD
+<<<<<<< HEAD
             <a href="{% url 'incluir_post' %}">Adicionar</a>
         <a href="{% url 'index' %}">Voltar ao inicio</a>
             {%else%}
         <a href="{% url 'incluir_post' %}">Adicionar</a>
 =======
+=======
+            	<div class="pagination">
+    <span class="step-links">
+        {% if posts.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ posts.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ posts.number }} of {{ posts.paginator.num_pages }}.
+        </span>
+
+        {% if posts.has_next %}
+            <a href="?page={{ posts.next_page_number }}">next</a>
+            <a href="?page={{ posts.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+>>>>>>> novas_questoes
          <a href="{% url 'incluir_post' %}">Adicionar postagem</a>
         <br>
         <br>

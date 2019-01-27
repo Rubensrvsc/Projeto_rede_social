@@ -22,6 +22,9 @@ from django.conf.urls import url
 from django.urls import reverse_lazy
 from django.contrib.auth.views import (PasswordResetView,PasswordResetDoneView,
 PasswordResetConfirmView,PasswordResetCompleteView)
+from django.contrib.staticfiles.urls import static,staticfiles_urlpatterns
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -48,7 +51,11 @@ urlpatterns = [
 =======
     path('perfil/desativar',views.desativa_perfil,name='desativar_perfil'),
     path('perfil/reativar',views.reativar_perfil,name='reativar_perfil'),
+<<<<<<< HEAD
 >>>>>>> 31aed2b4c36322ea5a19b48ce3fb42eb90e6cf7c
+=======
+    path('perfil/adicionar_foto',views.adicionar_foto,name='adicionar_foto'),
+>>>>>>> novas_questoes
 
      url(r'^reset-password/$', PasswordResetView.as_view( template_name='reset_password.html',
     success_url=reverse_lazy('password_reset_done'),email_template_name ='reset_password_email.html'), name='reset_password'),
@@ -61,3 +68,6 @@ urlpatterns = [
     url(r'^reset-password/complete/$', PasswordResetCompleteView.as_view(template_name= 'reset_password_complete.html'), name='password_reset_complete')
 
 ]
+if settings.DEBUG is True:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

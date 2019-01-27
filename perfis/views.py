@@ -3,7 +3,7 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 # Create your views here.
-from django.http import HttpResponseNotFound,HttpResponseRedirect
+from django.http import HttpResponseNotFound,HttpResponseRedirect,HttpResponse
 from .forms import *
 from django.contrib.auth import authenticate, login, logout,update_session_auth_hash
 from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
@@ -11,22 +11,34 @@ from django.urls import reverse
 from django.core.mail import send_mail
 from django.contrib import messages
 from django.conf import settings
+from django.core.paginator import Paginator
+from django.db import transaction
 
 @login_required
 def index(request):
     usuarioLogado = request.user.perfil
     if request.user.is_superuser is True:
-        return render(request,'pagina_super_user.html',{'perfis':Perfil.objects.all()
+        perfil=Perfil.objects.all()
+        paginator = Paginator(perfil,5)
+        page = request.GET.get('page')
+        perfis=paginator.get_page(page)
+        return render(request,'pagina_super_user.html',{'perfis':perfis
         ,'usuarioLogado': usuarioLogado})
     else:
-        posts = [post for post in request.user.perfil.timeline.all()]
-        print(posts)
+        post = [post for post in request.user.perfil.timeline.all()]
         contatos = request.user.perfil.contatos.all()
         for contato in contatos:
-            for post in contato.timeline.all():
-                posts.append(post)
+            for p in contato.timeline.all():
+                post.append(p)
+        paginator = Paginator(post,2)
+        page = request.GET.get('page')
+        posts=paginator.get_page(page)
 
-        return render(request, 'index.html',{'perfis' : Perfil.objects.all(),
+        perfil=Perfil.objects.all()
+        paginator = Paginator(perfil,5)
+        page = request.GET.get('page')
+        perfis=paginator.get_page(page)
+        return render(request, 'index.html',{'perfis' : perfis,
         'posts':posts, 'usuarioLogado': usuarioLogado})
 
 @login_required
@@ -105,6 +117,12 @@ def pesquisar(request):
     return render(request,'pesquisa_usuario.html')
 
 @login_required
+def adicionar_foto(request):
+    perfil = request.user.perfil
+    perfil.photo = request.GET['photo']
+    return redirect('index')
+
+@login_required
 def realizar_pesquisa(request):
 	nome=request.GET['nome']
 	perfis = Perfil.objects.filter(nome__contains=nome)
@@ -124,14 +142,15 @@ def exibir_timeline(request):
     return render(request, 'timeline.html', {'posts': posts, 'usuarioLogado': usuarioLogado})
 =======
     if request.user.is_superuser is True:
-        posts = [post for post in request.user.perfil.timeline.all()]
+        post = [post for post in request.user.perfil.timeline.all()]
         usuarioLogado = request.user.perfil
-        print(posts)
         contatos = request.user.perfil.contatos.all()
         for contato in contatos:
-            for post in contato.timeline.all():
-                posts.append(post)
-
+            for p in contato.timeline.all():
+                post.append(p)
+        paginator = Paginator(post,2)
+        page = request.GET.get('page')
+        posts=paginator.get_page(page)
         return render(request, 'timeline.html', {'posts': posts, 'usuarioLogado': usuarioLogado})
     else:
         return render(request,'erro.html')
@@ -141,7 +160,7 @@ def exibir_timeline(request):
 @login_required
 def incluir_post(request):
     if request.method == 'POST':
-        postform = PostForm(request.POST or None)
+        postform = PostForm(request.POST,request.FILES or None)
         if postform.is_valid():
             postinstance = postform.save(commit=False)
             postinstance.timeline=request.user.perfil
