@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from perfis.models import Perfil 
 from usuarios.forms import RegistrarUsuarioForm
 from django.db import IntegrityError, transaction
+from django.http import HttpResponse
 
 # Create your views here.
 
@@ -19,15 +20,22 @@ class RegistarUsuarioView(View):
         form = RegistrarUsuarioForm(request.POST) 
         if form.is_valid(): 
             dados_form = form.cleaned_data
-            with transaction.atomic(): 
-                usuario = User.objects.create_user(username = dados_form['nome'], 
+            try:
+                with transaction.atomic(): 
+                    usuario = User.objects.create_user(username = dados_form['nome'], 
                                         email = dados_form['email'], 
                                         password = dados_form ['senha'])
+            except:
+                return HttpResponse("usuario possui algum erro")
             perfil = Perfil(nome=dados_form['nome'], 
                             telefone=dados_form['telefone'], 
                             nome_empresa=dados_form['nome_empresa'],
                              usuario=usuario)
-            with transaction.atomic(): 
-                perfil.save() 
+            try:
+                with transaction.atomic():
+                    perfil.nome=None 
+                    perfil.save()
+            except IntegrityError:
+                return HttpResponse("perfil possui algum erro") 
             return redirect('index')
         return render(request, self.template_name, {'form' : form})
