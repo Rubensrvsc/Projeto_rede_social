@@ -33,7 +33,7 @@ class RegistarUsuarioView(View):
                              usuario=usuario)
             try:
                 with transaction.atomic():
-                    perfil.nome=None 
+                    #perfil.nome=None 
                     perfil.save()
             except IntegrityError:
                 return HttpResponse("perfil possui algum erro") 
