@@ -41,6 +41,7 @@ def index(request):
         return render(request, 'index.html',{'perfis' : perfis,
         'posts':posts, 'usuarioLogado': usuarioLogado})
 
+@transaction.atomic
 @login_required
 def exibir_perfil(request, perfil_id):
 
@@ -120,6 +121,7 @@ def realizar_pesquisa(request):
 	perfis = Perfil.objects.filter(nome__contains=nome)
 	return render(request,'mostrar_pesquisa.html',{'perfil':perfis})
 
+@transaction.atomic
 @login_required
 def exibir_timeline(request):
     if request.user.is_superuser is True:
