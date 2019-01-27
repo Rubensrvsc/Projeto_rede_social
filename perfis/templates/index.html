@@ -1,16 +1,20 @@
 {% extends 'base.html' %}
 {% block body %}
+<div class="container">
+<div class="row justify-content-md-center">
+
+
 {% if usuarioLogado.is_ativo is False %}
-<div class="col-lg-12"> 		
+<div class="col col-lg-12"> 		
 	<div class="panel panel-default">
     <div class="panel-heading">
     <p>Conta Desativada</p>
     </div>
     </div>
     </div>
-    <a href="{% url 'reativar_conta' %}">Reativar conta</a>
+    <a href="{% url 'reativar_perfil' %}">Reativar conta</a>
 {%else%}
-<div class="col-lg-12"> 		
+<div class="col-md-auto"> 		
 	<div class="panel panel-default">
     <div class="panel-heading">
 			<strong>Timeline</strong>
@@ -22,6 +26,7 @@
                     <hr style="height:2px; border:none; color:#000; background-color:#000; margin-top: 10px; margin-bottom: 0px;">
                 <h2>{{p.texto}}</h2>
                 <p>{{p.data}}</p>
+                <p><img src="{{ p.photo_post.url}}" height="100"></p>
                 <!--<a href="{% url 'excluir_post' p.id %}">Deletar Post</a>-->
                     {% if p in usuarioLogado.timeline.all or usuarioLogado.usuario.is_superuser is True %}
                         <button onclick="confirmarDelete()">Deletar postagem</button>
@@ -76,7 +81,8 @@
 </div>
 
 
-<div class="col-lg-12"> 		
+
+<div class="col col-lg-12"> 		
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<strong>Todos os perfis</strong>
@@ -101,6 +107,22 @@
 			<p>Não há perfis cadastrados</p>
 		{% endif %}
 		</ul>
+
+        <span class="step-links">
+        {% if perfis.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ perfis.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ perfis.number }} of {{ perfis.paginator.num_pages }}.
+        </span>
+
+        {% if perfis.has_next %}
+            <a href="?page={{ perfis.next_page_number }}">next</a>
+            <a href="?page={{ perfis.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
 	</div>	
 <nav>
     <div class="panel panel-default">
@@ -132,6 +154,9 @@
         
     </div>    
 </nav>
+
+
+
     <div class="col-lg-12"> 		
 	<div class="panel panel-default">
 		<div class="panel-heading">		
@@ -191,9 +216,6 @@
     </div>
 </div>
 {%endif%}
-<style>
-aside{
-    float: right;
-}
-</style>
+</div>
+</div>
 {% endblock %}

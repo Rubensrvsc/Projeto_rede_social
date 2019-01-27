@@ -5,7 +5,7 @@ from .models import *
 class PostForm(ModelForm):
     class Meta:
         model=Post
-        fields=('texto',)
+        fields=('texto','photo_post',)
 
 class JustificativaForm(ModelForm):
     class Meta:

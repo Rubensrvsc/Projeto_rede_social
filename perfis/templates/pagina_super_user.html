@@ -31,11 +31,30 @@
 				</li>
                 
 			{% endfor %}
+            
+            
 		{% else %}	
 			<p>Não há perfis cadastrados</p>
 		{% endif %}
 		</ul>
+        <span class="step-links">
+        {% if perfis.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ perfis.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ perfis.number }} of {{ perfis.paginator.num_pages }}.
+        </span>
+
+        {% if perfis.has_next %}
+            <a href="?page={{ perfis.next_page_number }}">next</a>
+            <a href="?page={{ perfis.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+      
 	</div>	
+
 
 <div class="panel panel-default">
     <div class="panel-body">
@@ -71,4 +90,10 @@
         {% endwith %}   
     </div>    
 {%endif%}
+
+<form method="GET" action="{% url 'adicionar_foto' %}">
+ <h1>Digite o nome a ser procurado</h1>
+    <input type="file" placeholder="adicionar foto" aria-label="" name="photo">
+    <button type="submit">Adicionar</button> 
+</form>
 {%endblock%}
