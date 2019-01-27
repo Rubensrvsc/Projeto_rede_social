@@ -10,7 +10,7 @@ class Perfil(models.Model):
     photo = models.ImageField(upload_to='', null=True, blank = True)
     bloq = models.ManyToManyField('Perfil',related_name='bloqueado',null=True, blank=True)
     usuario = models.OneToOneField(User, related_name="perfil", on_delete = models.CASCADE,default="", editable=False)
-
+    is_ativo = models.BooleanField(default=True)
 
     def __str__(self):
         return self.nome
@@ -19,6 +19,14 @@ class Perfil(models.Model):
     def email(self): 
         return self.usuario.email
 
+    def desativar(self):
+        self.is_ativo=False
+        self.save()
+
+    def reativar(self):
+        self.is_ativo=True
+        self.save()
+
     def convidar(self, perfil_convidado):
         #if self.pode_convidar(perfil_convidado):
         convite = Convite(solicitante=self,convidado = perfil_convidado)
@@ -26,7 +34,11 @@ class Perfil(models.Model):
     
     def super_user(self):
         self.usuario.is_superuser=True
+<<<<<<< HEAD
         self.save()
+=======
+        self.usuario.save()
+>>>>>>> 31aed2b4c36322ea5a19b48ce3fb42eb90e6cf7c
 
     def desfazer(self,perfil):
         self.contatos.remove(perfil)
@@ -45,7 +57,10 @@ class Perfil(models.Model):
             return
         else:
             self.bloq.remove(perfil)
+<<<<<<< HEAD
             self.convidar(perfil)
+=======
+>>>>>>> 31aed2b4c36322ea5a19b48ce3fb42eb90e6cf7c
             self.save()
 
     def remove(self,perfil):
@@ -71,3 +86,7 @@ class Post(models.Model):
     texto = models.CharField(max_length=140)
     data = models.DateTimeField(auto_now=True)
     timeline = models.ForeignKey(Perfil, related_name = 'timeline' ,on_delete = models.CASCADE)
+
+class Status(models.Model):
+    perfil = models.OneToOneField(Perfil,on_delete=models.CASCADE)
+    justificativa = models.CharField(max_length=256)

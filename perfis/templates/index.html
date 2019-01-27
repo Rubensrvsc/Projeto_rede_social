@@ -1,10 +1,68 @@
 {% extends 'base.html' %}
 {% block body %}
+{% if usuarioLogado.is_ativo is False %}
+<div class="col-lg-12"> 		
+	<div class="panel panel-default">
+    <div class="panel-heading">
+    <p>Conta Desativada</p>
+    </div>
+    </div>
+    </div>
+    <a href="{% url 'reativar_conta' %}">Reativar conta</a>
+{%else%}
+<div class="col-lg-12"> 		
+	<div class="panel panel-default">
+    <div class="panel-heading">
+			<strong>Timeline</strong>
+		</div>
+           <h3>Posts</h3>
+        {%if posts|length > 0%}
+            {% for p in posts %}
+                <div>
+                    <hr style="height:2px; border:none; color:#000; background-color:#000; margin-top: 10px; margin-bottom: 0px;">
+                <h2>{{p.texto}}</h2>
+                <p>{{p.data}}</p>
+                <!--<a href="{% url 'excluir_post' p.id %}">Deletar Post</a>-->
+                    {% if p in usuarioLogado.timeline.all or usuarioLogado.usuario.is_superuser is True %}
+                        <button onclick="confirmarDelete()">Deletar postagem</button>
+
+                    <script>
+                        function confirmarDelete()
+                        {
+                        var x;
+                        var r=confirm("Excluir postagem?");
+                        if (r==true)
+                          {
+                          location.href="{% url 'excluir_post' p.id %}"
+                          }
+                        }
+                    </script>
+
+                    {% endif %}
+
+
+                </div>
+            {% endfor %}
+         <a href="{% url 'incluir_post' %}">Adicionar postagem</a>
+        <br>
+        <br>
+        <br>
+            {%else%}
+        <a href="{% url 'incluir_post' %}">Adicionar postagem</a>
+        <br>
+        <br>
+        <br>
+        {%endif%}
+    </div>
+</div>
+	
 <div class="col-lg-12"> 		
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<strong>Todos os perfis</strong>
 		</div>
+        <br>
+    <head></head>
 		{% if perfis %}
 		<ul class="list-group">
 			{% for perfil in perfis %}
@@ -12,20 +70,28 @@
 					<a href = "{% url 'exibir' perfil.id %}">	{{ perfil.nome }} / {{ perfil.email }}
 					</a>
                     {% if not perfil in user.perfil.bloq.all%}
+<<<<<<< HEAD
                         <a href="{% url 'bloquear' perfil.id %}" class="btn btn-sm btn-secondary">Bloquear usuário</a>
                     {%else%}
                     <a href="{% url 'desbloquear' perfil.id %}">Desbloquear usuario</a>
 		            {% endif %}	
+=======
+                        <a href="{% url 'bloquear' perfil.id %}">Bloquear usuário</a>
+                    {%else%}
+                    <a href="{% url 'desbloquear' perfil.id %}">Desbloquear usuario</a>
+		            {% endif %}		
+>>>>>>> 31aed2b4c36322ea5a19b48ce3fb42eb90e6cf7c
 				</li>
+                
 			{% endfor %}
 		{% else %}	
 			<p>Não há perfis cadastrados</p>
 		{% endif %}
 		</ul>
 	</div>	
-
+<nav>
     <div class="panel panel-default">
-        {% with total=perfil_logado.contatos.count %}
+        {% with total=usuarioLogado.contatos.count %}
             {% if total %}
                 <div class="panel-heading">
                     <strong> {{ total }}  
@@ -33,7 +99,7 @@
                     </strong>
                 </div>
                 <ul class="list-group">
-                    {% for perfil in perfil_logado.contatos.all %}
+                    {% for perfil in usuarioLogado.contatos.all %}
                         <li class = "list-group-item">
                             <a href = "{% url 'exibir' perfil.id %}">
                                 {{ perfil }}
@@ -49,11 +115,14 @@
                     Não há contatos :(
                 </div>    
             {% endif %}
-        {% endwith %}    
+        {% endwith %}   
+        
     </div>    
-
-    <div class="panel panel-default">
-        {% with total=perfil_logado.convites_recebidos.count %}
+</nav>
+    <div class="col-lg-12"> 		
+	<div class="panel panel-default">
+		<div class="panel-heading">		
+        {% with total=usuarioLogado.convites_recebidos.count %}
 
             {% if total %}
                 <div class="panel-heading">
@@ -61,7 +130,7 @@
                     Convite{{ total|pluralize }} aguardando aprovação</strong>
                 </div>
                 <ul class="list-group">
-                    {% for convite in perfil_logado.convites_recebidos.all %}
+                    {% for convite in usuarioLogado.convites_recebidos.all %}
                         <li class = "list-group-item">
                            <ul class = "list-inline">
                                 <li class = "list-inline-item">
@@ -85,11 +154,9 @@
                 </div>    
             {% endif %}
         {% endwith %}    
-    </div>
-    <div class="panel panel-default">
-    <div class="panel-body">
-        <a href = "{% url 'timeline'%}">Ver timeline</a>
-    </div> 
+		</div>
+        </div>
+        </div>
     </div>
     <div class="panel panel-default">
     <div class="panel-body">
@@ -110,4 +177,10 @@
     </div> 
     </div>
 </div>
+{%endif%}
+<style>
+aside{
+    float: right;
+}
+</style>
 {% endblock %}
