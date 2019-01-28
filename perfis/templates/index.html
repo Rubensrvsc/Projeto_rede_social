@@ -96,17 +96,11 @@
 					<a href = "{% url 'exibir' perfil.id %}">	{{ perfil.nome }} / {{ perfil.email }}
 					</a>
                     {% if not perfil in user.perfil.bloq.all%}
-<<<<<<< HEAD
-                        <a href="{% url 'bloquear' perfil.id %}" class="btn btn-sm btn-secondary">Bloquear usuário</a>
-                    {%else%}
-                    <a href="{% url 'desbloquear' perfil.id %}">Desbloquear usuario</a>
-		            {% endif %}	
-=======
+
                         <a href="{% url 'bloquear' perfil.id %}">Bloquear usuário</a>
                     {%else%}
                     <a href="{% url 'desbloquear' perfil.id %}">Desbloquear usuario</a>
 		            {% endif %}		
->>>>>>> 31aed2b4c36322ea5a19b48ce3fb42eb90e6cf7c
 				</li>
                 
 			{% endfor %}

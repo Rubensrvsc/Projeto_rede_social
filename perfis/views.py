@@ -45,19 +45,12 @@ def index(request):
 @login_required
 def exibir_perfil(request, perfil_id):
 
-<<<<<<< HEAD
-    perfil = Perfil.objects.get(id=perfil_id)
-    if not request.user.perfil in perfil.bloq.all():
-        return render(request, 'perfil.html',{'perfil' : perfil, 'perfil_logado' : get_perfil_logado(request)})
-    else:
-        return redirect('index')
-=======
+
         perfil = Perfil.objects.get(id=perfil_id)
         if not request.user.perfil in perfil.bloq.all():
             return render(request, 'perfil.html',{'perfil' : perfil, 'perfil_logado' : get_perfil_logado(request)})
         else:
             return redirect('index')
->>>>>>> 31aed2b4c36322ea5a19b48ce3fb42eb90e6cf7c
 
 @login_required
 def convidar(request,perfil_id):
@@ -133,17 +126,6 @@ def realizar_pesquisa(request):
 @transaction.atomic
 @login_required
 def exibir_timeline(request):
-<<<<<<< HEAD
-    posts = [post for post in request.user.perfil.timeline.all()]
-    usuarioLogado = request.user.perfil
-    print(posts)
-    contatos = request.user.perfil.contatos.all()
-    for contato in contatos:
-        for post in contato.timeline.all():
-            posts.append(post)
-
-    return render(request, 'timeline.html', {'posts': posts, 'usuarioLogado': usuarioLogado})
-=======
     if request.user.is_superuser is True:
         post = [post for post in request.user.perfil.timeline.all()]
         usuarioLogado = request.user.perfil
@@ -157,8 +139,6 @@ def exibir_timeline(request):
         return render(request, 'timeline.html', {'posts': posts, 'usuarioLogado': usuarioLogado})
     else:
         return render(request,'erro.html')
-
->>>>>>> 31aed2b4c36322ea5a19b48ce3fb42eb90e6cf7c
 
 @login_required
 def incluir_post(request):
@@ -182,12 +162,7 @@ def excluir_post(request,id_post):
 def is_super_user(request,perfil_id):
     if request.user.is_superuser==True:
     	perfil=Perfil.objects.get(id=perfil_id)
-<<<<<<< HEAD
-    	perfil.super_user().save()
-        #perfil.save()
-=======
     	perfil.super_user()
->>>>>>> 31aed2b4c36322ea5a19b48ce3fb42eb90e6cf7c
     	return redirect('index')
     else:
     	return render(request,'erro.html')
@@ -197,13 +172,11 @@ def bloquear_usuario(request, perfil_id):
     perfil = Perfil.objects.get(id=perfil_id)
     request.user.perfil.bloquear(perfil)
     
-<<<<<<< HEAD
-=======
+
 @login_required
 def bloquear_usuario(request, perfil_id):
     perfil = Perfil.objects.get(id=perfil_id)
     request.user.perfil.bloquear(perfil)
->>>>>>> 31aed2b4c36322ea5a19b48ce3fb42eb90e6cf7c
     return redirect('index')
 
 @login_required
@@ -212,8 +185,6 @@ def desbloquear_usuario(request,perfil_id):
     request.user.perfil.desbloquear(perfil)
     return redirect('index')
 
-<<<<<<< HEAD
-=======
 @login_required
 def password_reset_confirm(request,uidb,token):
     send_mail('Subject here', 'mensagem', settings.EMAIL_HOST_USER,
@@ -237,9 +208,4 @@ def desativa_perfil(request):
 @login_required
 def reativar_perfil(request):
     request.user.perfil.reativar()
-<<<<<<< HEAD
     return redirect('index')
->>>>>>> 31aed2b4c36322ea5a19b48ce3fb42eb90e6cf7c
-=======
-    return redirect('index')
->>>>>>> novas_questoes

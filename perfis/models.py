@@ -34,11 +34,8 @@ class Perfil(models.Model):
     
     def super_user(self):
         self.usuario.is_superuser=True
-<<<<<<< HEAD
-        self.save()
-=======
         self.usuario.save()
->>>>>>> 31aed2b4c36322ea5a19b48ce3fb42eb90e6cf7c
+
 
     def desfazer(self,perfil):
         self.contatos.remove(perfil)
@@ -57,10 +54,6 @@ class Perfil(models.Model):
             return
         else:
             self.bloq.remove(perfil)
-<<<<<<< HEAD
-            self.convidar(perfil)
-=======
->>>>>>> 31aed2b4c36322ea5a19b48ce3fb42eb90e6cf7c
             self.save()
 
     def remove(self,perfil):
