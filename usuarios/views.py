@@ -26,16 +26,16 @@ class RegistarUsuarioView(View):
                                         email = dados_form['email'], 
                                         password = dados_form ['senha'])
             except:
-                return HttpResponse("usuario possui algum erro")
+                return render(request,"erro_transacao.html")
             perfil = Perfil(nome=dados_form['nome'], 
                             telefone=dados_form['telefone'], 
                             nome_empresa=dados_form['nome_empresa'],
                              usuario=usuario)
             try:
                 with transaction.atomic():
-                    perfil.nome=None 
+                    #perfil.nome=None 
                     perfil.save()
             except IntegrityError:
-                return HttpResponse("perfil possui algum erro") 
+                return render(request,"erro_transacao.html") 
             return redirect('index')
         return render(request, self.template_name, {'form' : form})
