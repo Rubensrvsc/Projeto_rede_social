@@ -1,39 +1,81 @@
 {% extends 'base.html' %}
 {% block body %}
-<div class="container">
-<div class="row justify-content-md-center">
+<div class="col-md-3">
+
+    <nav>
+        <h4 style = "text-align:center">Contatos</h4>
+        <div class="panel panel-default">
+            {% with total=usuarioLogado.contatos.count %}
+            {% if total %}
+            <div class="panel-heading">
+                <strong> {{ total }}
+                    Contato{{ total|pluralize }}
+                </strong>
+            </div>
+            <ul class="list-group">
+                {% for perfil in usuarioLogado.contatos.all %}
+                <li class="list-group-item">
+                    <a href="{% url 'exibir' perfil.id %}">
+                        {{ perfil }}
+                    </a>
+                    <a class="pull-right" href="{% url 'desfazer' perfil.id %}">
+                        desfazer amizade
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <div class="panel-body">
+                Não há contatos :(
+            </div>
+            {% endif %}
+            {% endwith %}
+
+        </div>
+    </nav>
 
 
-{% if usuarioLogado.is_ativo is False %}
-<div class="col col-lg-12"> 		
-	<div class="panel panel-default">
-    <div class="panel-heading">
-    <p>Conta Desativada</p>
-    </div>
-    </div>
-    </div>
-    <a href="{% url 'reativar_perfil' %}">Reativar conta</a>
-{%else%}
-<div class="col-md-auto"> 		
-	<div class="panel panel-default">
-    <div class="panel-heading">
-			<strong>Timeline</strong>
-		</div>
-           <h3>Posts</h3>
-        {%if posts|length > 0%}
-            {% for p in posts %}
-                <div>
-                    <hr style="height:2px; border:none; color:#000; background-color:#000; margin-top: 10px; margin-bottom: 0px;">
-                <h2>{{p.texto}}</h2>
-                <p>{{p.data}}</p>
-                {% if p.photo_post %}
-                <p><img src="{{ p.photo_post.url}}" height="100"></p>
-                {%endif%}
-                <!--<a href="{% url 'excluir_post' p.id %}">Deletar Post</a>-->
-                    {% if p in usuarioLogado.timeline.all or usuarioLogado.usuario.is_superuser is True %}
+</div>
+<div class="col-md-6">
+
+    <div class="container">
+        <div class="row justify-content-md-center">
+
+
+            {% if usuarioLogado.is_ativo is False %}
+            <div class="col col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <p>Conta Desativada</p>
+                    </div>
+                </div>
+            </div>
+            <a href="{% url 'reativar_perfil' %}">Reativar conta</a>
+            {%else%}
+
+            <div class="col-md-auto">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <strong>Timeline</strong>
+                    </div>
+                    <h3>Posts</h3>
+                    {%if posts|length > 0%}
+                    {% for p in posts %}
+                    <div>
+
+                        <hr style="height:2px; border:none; color:#000; background-color:#000; margin-top: 10px; margin-bottom: 0px;">
+                        <br>
+                        <a href="#">{{p.timeline.nome}}</a>
+                        <h4>{{p.texto}}</h4>
+                        <p>{{p.data}}</p>
+                        {% if p.photo_post %}
+                        <p><img src="{{ p.photo_post.url}}" height="100"></p>
+                        {%endif%}
+                        <!--<a href="{% url 'excluir_post' p.id %}">Deletar Post</a>-->
+                        {% if p in usuarioLogado.timeline.all or usuarioLogado.usuario.is_superuser is True %}
                         <button onclick="confirmarDelete()">Deletar postagem</button>
 
-                    <script>
+                        <script>
                         function confirmarDelete()
                         {
                         var x;
@@ -43,15 +85,17 @@
                           location.href="{% url 'excluir_post' p.id %}"
                           }
                         }
-                    </script>
 
-                    {% endif %}
+                        </script>
+
+                        {% endif %}
 
 
-                </div>
-            {% endfor %}
+                    </div>
+                    {% endfor %}
 
-	<div class="pagination">
+
+                    <div class="pagination">
     <span class="step-links">
         {% if posts.has_previous %}
             <a href="?page=1">&laquo; first</a>
@@ -67,51 +111,50 @@
             <a href="?page={{ posts.paginator.num_pages }}">last &raquo;</a>
         {% endif %}
     </span>
-    </div>
-            
-         <a href="{% url 'incluir_post' %}">Adicionar postagem</a>
-        <br>
-        <br>
-        <br>
-            {%else%}
-        <a href="{% url 'incluir_post' %}">Adicionar postagem</a>
-        <br>
-        <br>
-        <br>
-        {%endif%}
-    </div>
-</div>
+                    </div>
 
-
-
-<div class="col col-lg-12"> 		
-	<div class="panel panel-default">
-		<div class="panel-heading">
-			<strong>Todos os perfis</strong>
-		</div>
-        <br>
-    <head></head>
-		{% if perfis %}
-		<ul class="list-group">
-			{% for perfil in perfis %}
-				<li class="list-group-item">
-					<a href = "{% url 'exibir' perfil.id %}">	{{ perfil.nome }} / {{ perfil.email }}
-					</a>
-                    {% if not perfil in user.perfil.bloq.all%}
-
-                        <a href="{% url 'bloquear' perfil.id %}">Bloquear usuário</a>
+                    <a href="{% url 'incluir_post' %}">Adicionar postagem</a>
+                    <br>
+                    <br>
+                    <br>
                     {%else%}
-                    <a href="{% url 'desbloquear' perfil.id %}">Desbloquear usuario</a>
-		            {% endif %}		
-				</li>
-                
-			{% endfor %}
-		{% else %}	
-			<p>Não há perfis cadastrados</p>
-		{% endif %}
-		</ul>
+                    <a href="{% url 'incluir_post' %}">Adicionar postagem</a>
+                    <br>
+                    <br>
+                    <br>
+                    {%endif%}
+                </div>
+            </div>
 
-        <span class="step-links">
+
+            <div class="col col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <strong>Todos os perfis</strong>
+                    </div>
+                    <br>
+                    <head></head>
+                    {% if perfis %}
+                    <ul class="list-group">
+                        {% for perfil in perfis %}
+                        <li class="list-group-item">
+                            <a href="{% url 'exibir' perfil.id %}"> {{ perfil.nome }} / {{ perfil.email }}
+                            </a>
+                            {% if not perfil in user.perfil.bloq.all%}
+
+                            <a href="{% url 'bloquear' perfil.id %}">Bloquear usuário</a>
+                            {%else%}
+                            <a href="{% url 'desbloquear' perfil.id %}">Desbloquear usuario</a>
+                            {% endif %}
+                        </li>
+
+                        {% endfor %}
+                        {% else %}
+                        <p>Não há perfis cadastrados</p>
+                        {% endif %}
+                    </ul>
+
+                    <span class="step-links">
         {% if perfis.has_previous %}
             <a href="?page=1">&laquo; first</a>
             <a href="?page={{ perfis.previous_page_number }}">previous</a>
@@ -126,99 +169,87 @@
             <a href="?page={{ perfis.paginator.num_pages }}">last &raquo;</a>
         {% endif %}
     </span>
-	</div>	
-<nav>
-    <div class="panel panel-default">
-        {% with total=usuarioLogado.contatos.count %}
-            {% if total %}
-                <div class="panel-heading">
-                    <strong> {{ total }}  
-                        Contato{{ total|pluralize }}
-                    </strong>
                 </div>
-                <ul class="list-group">
-                    {% for perfil in usuarioLogado.contatos.all %}
-                        <li class = "list-group-item">
-                            <a href = "{% url 'exibir' perfil.id %}">
-                                {{ perfil }}
-                            </a>
-                            <a class="pull-right" href="{% url 'desfazer' perfil.id %}">
-                                desfazer amizade
+
+
+                <div class="col-lg-12">
+
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h4> Setar super user</h4>
+                    {% if perfis %}
+                    <ul class="list-group">
+                        {% for perfil in perfis %}
+                        <li class="list-group-item">
+                            <a href="{% url 'superuser' perfil.id %}"> {{ perfil.nome }} / {{ perfil.email }}
+                                / is super user ? {{perfil.usuario.is_superuser}}
                             </a>
                         </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <div class="panel-body">
-                    Não há contatos :(
-                </div>    
-            {% endif %}
-        {% endwith %}   
-        
-    </div>    
-</nav>
-
-
-
-    <div class="col-lg-12"> 		
-	<div class="panel panel-default">
-		<div class="panel-heading">		
-        {% with total=usuarioLogado.convites_recebidos.count %}
-
-            {% if total %}
-                <div class="panel-heading">
-                    <strong> {{ total }}  
-                    Convite{{ total|pluralize }} aguardando aprovação</strong>
+                        {% endfor %}
+                        {% else %}
+                        <p>Não há perfis cadastrados</p>
+                        {% endif %}
+                    </ul>
                 </div>
-                <ul class="list-group">
-                    {% for convite in usuarioLogado.convites_recebidos.all %}
-                        <li class = "list-group-item">
-                           <ul class = "list-inline">
-                                <li class = "list-inline-item">
-                                    <a href = "{% url 'exibir' convite.solicitante.id %}">
-                                        {{convite.solicitante.nome}}
-                                    </a>
-                                </li>
-                                <li class = "list-inline-item pull-right">
-                                    <a href = "{% url 'recusar' convite.id %}">recusar</a>
-                                </li>
-                                <li class = "list-inline-item pull-right">
-                                    <a href = "{% url 'aceitar' convite.id %}">aceitar</a>
-                                </li>
-                        
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <div class="panel-body">
-                    Não há convites
-                </div>    
-            {% endif %}
-        {% endwith %}    
-		</div>
+            </div>
         </div>
-        </div>
-    </div>
-    <div class="panel panel-default">
-    <div class="panel-body">
-    <h4> Setar super user</h4>
-        {% if perfis %}
-		<ul class="list-group">
-			{% for perfil in perfis %}
-				<li class="list-group-item">
-                    <a href = "{% url 'superuser' perfil.id %}">	{{ perfil.nome }} / {{ perfil.email }}
-                    / is super user ? {{perfil.usuario.is_superuser}}
-					</a>
-				</li>
-			{% endfor %}
-		{% else %}	
-			<p>Não há perfis cadastrados</p>
-		{% endif %}
-		</ul>
-    </div> 
+        {%endif%}
     </div>
 </div>
-{%endif%}
-</div>
-</div>
-{% endblock %}
+
+<div class="col-md-3">
+
+        <aside>
+
+            <h4 style = "text-align:center">Convites Recebidos</h4>
+
+            <div class="panel panel-default">
+                        <div class="panel-heading">
+                            {% with total=usuarioLogado.convites_recebidos.count %}
+
+                            {% if total %}
+                            <div class="panel-heading">
+                                <strong> {{ total }}
+                                    Convite{{ total|pluralize }} aguardando aprovação</strong>
+                            </div>
+                            <ul class="list-group">
+                                {% for convite in usuarioLogado.convites_recebidos.all %}
+                                <li class="list-group-item">
+                                    <ul class="list-inline">
+                                        <li class="list-inline-item">
+                                            <a href="{% url 'exibir' convite.solicitante.id %}">
+                                                {{convite.solicitante.nome}}
+                                            </a>
+                                        </li>
+                                        <li class="list-inline-item pull-right">
+                                            <a href="{% url 'recusar' convite.id %}">recusar</a>
+                                        </li>
+                                        <li class="list-inline-item pull-right">
+                                            <a href="{% url 'aceitar' convite.id %}">aceitar</a>
+                                        </li>
+
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% else %}
+                                    <div class="panel-body">
+                                        Não há convites
+                                    </div>
+                                    {% endif %}
+                                    {% endwith %}
+                        </div>
+                    </div>
+
+            <h4 style = "text-align:center">Convites enviados</h4>
+
+        </aside>
+
+    </div>
+
+
+
+
+
+    {% endblock %}
