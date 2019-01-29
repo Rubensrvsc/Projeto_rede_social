@@ -30,7 +30,7 @@ def index(request):
         for contato in contatos:
             for p in contato.timeline.all():
                 post.append(p)
-        paginator = Paginator(post,2)
+        paginator = Paginator(post,5)
         page = request.GET.get('page')
         posts=paginator.get_page(page)
 
@@ -54,14 +54,16 @@ def exibir_perfil(request, perfil_id):
 
 @login_required
 def convidar(request,perfil_id):
-
-	perfil_a_convidar = Perfil.objects.get(id=perfil_id)
-	perfil_logado = get_perfil_logado(request)
+    perfil_a_convidar = Perfil.objects.get(id=perfil_id)
+    if perfil_a_convidar.id == request.user.perfil.id:
+        return render(request,'erro_convite.html')
+    else:
+	    perfil_logado = get_perfil_logado(request)
 	
-	#if(perfil_logado.pode_convidar(perfil_a_convidar)):
-	perfil_logado.convidar(perfil_a_convidar)
+	    #if(perfil_logado.pode_convidar(perfil_a_convidar)):
+	    perfil_logado.convidar(perfil_a_convidar)
 	
-	return  redirect('index')
+	    return  redirect('index')
 
 @login_required
 def get_perfil_logado(request):
@@ -133,7 +135,7 @@ def exibir_timeline(request):
         for contato in contatos:
             for p in contato.timeline.all():
                 post.append(p)
-        paginator = Paginator(post,2)
+        paginator = Paginator(post,5)
         page = request.GET.get('page')
         posts=paginator.get_page(page)
         return render(request, 'timeline.html', {'posts': posts, 'usuarioLogado': usuarioLogado})

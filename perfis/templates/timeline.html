@@ -40,7 +40,8 @@
         <a href="{% url 'index' %}">Voltar ao inicio</a>
             {%else%}
         <a href="{% url 'incluir_post' %}">Adicionar</a>
-
+        <a href="{% url 'index' %}">Voltar ao inicio</a>
+{%endif%}
             	<div class="pagination">
     <span class="step-links">
         {% if posts.has_previous %}
@@ -58,18 +59,5 @@
         {% endif %}
     </span>
 </div>
-         <a href="{% url 'incluir_post' %}">Adicionar postagem</a>
-        <br>
-        <br>
-        <br>
-        <a href="{% url 'index' %}">Voltar ao inicio</a>
-            {%else%}
-        <a href="{% url 'incluir_post' %}">Adicionar postagem</a>
-        </br>
-        <br>
-        <br>
-        <a href="{% url 'index' %}">Voltar ao inicio</a>
-        {%endif%}
-    </body>
 </html>
 {%endblock%}

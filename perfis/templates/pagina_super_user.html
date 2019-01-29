@@ -88,12 +88,12 @@
                 </div>    
             {% endif %}
         {% endwith %}   
-    </div>    
-{%endif%}
-
-<form method="GET" action="{% url 'adicionar_foto' %}">
- <h1>Digite o nome a ser procurado</h1>
+    </div>   
+    <form method="GET" action="{% url 'adicionar_foto' %}">
+ <h1>Procure uma foto</h1>
     <input type="file" placeholder="adicionar foto" aria-label="" name="photo">
     <button type="submit">Adicionar</button> 
-</form>
+</form> 
+{%endif%}
+
 {%endblock%}
