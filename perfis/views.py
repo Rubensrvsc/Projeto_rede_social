@@ -1,4 +1,4 @@
-from perfis.models import Perfil, Convite,Post
+from perfis.models import Perfil, Convite,Post,Produto
 from django.shortcuts import render,redirect
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -61,8 +61,10 @@ def exibir_perfil(request, perfil_id):
     if request.method=='GET':
         perfil = Perfil.objects.get(id=perfil_id)
         if not request.user.perfil in perfil.bloq.all():
+            produtos = [produtos for produtos in request.user.perfil.produto.all()]
             perfil_serializer=PerfilSerializer(perfil)
-            return render(request, 'perfil.html',{'perfil' : perfil_serializer.data, 'perfil_logado' : get_perfil_logado(request)})
+            return render(request, 'perfil.html',{'perfil' : perfil_serializer.data, 
+            'perfil_logado' : get_perfil_logado(request),'produto':produtos})
         else:
             return redirect('index')
 
@@ -258,7 +260,12 @@ def anuciar_produto(request):
     return render(request,'anunciar_produto.html',{'form':form})
     
 @login_required
-def comprar_produto(request):
+def comprar_produto(request,perfil_id,produto_id):
+    perfil=Perfil.objects.get(id=perfil_id)
+    if perfil==request.user.perfil:
+        return redirect('erro')
+    else:
+        produto=Produto.objects.get(id=produto_id)
     pass
 
 @login_required
@@ -266,5 +273,13 @@ def depositar(request):
     dinheiro=request.GET['dinheiro']
     request.user.perfil.depositar_dinheiro(dinheiro)
     return redirect('index')
+
+@login_required
+def descontar_produto(request,produto_id):
+    dinheiro=request.GET['desconto']
+    produto=Produto.objects.get(id=produto_id)
+    produto.desconto(dinheiro)
+    return redirect('index')
+    pass
 
 

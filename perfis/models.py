@@ -98,13 +98,17 @@ class Produto(models.Model):
     
     def compra(self,perfil,qtd_dinheiro):
         perfil.produto.dinheiro-=qtd_dinheiro
-        self.produto.dinheiro+=qtd_dinheiro
+        self.preco+=qtd_dinheiro
         perfil.produto.add(self).save()
         self.delete().save()
     
     def desconto(self,qtd_dinheiro):
-        self.produto.dinheiro-=qtd_dinheiro
-        self.produto.save()
+        self.preco-=int(qtd_dinheiro)
+        teste=self.preco
+        if teste<0:
+            return
+        else:
+            self.save()
     
     def salvar_produto(self,perfil):
         self.produto=perfil
