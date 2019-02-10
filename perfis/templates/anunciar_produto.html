@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container">
+    <h1>Anunciar Produto</h1>
+    <p>
+    Cadastre um profuto
+</p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Cadastrar produto</button>
+    </form>
+</div>
+{% endblock %}

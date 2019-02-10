@@ -23,6 +23,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from .serializers import *
 from rest_framework.response import Response
+from django.urls import reverse
 
 @login_required
 def index(request):
@@ -241,6 +242,29 @@ def reativar_perfil(request):
 
 @login_required
 def criar_token(request):
-    Token.objects.get_or_create(user=request.user)
+    token=Token.objects.get_or_create(user=request.user)
     return redirect('index')
+
+@login_required
+def anuciar_produto(request):
+    if request.method=='POST':
+        form=ProdutoForm(request.POST or None)
+        if form.is_valid():
+            instance=form.save(commit=False)
+            instance.salvar_produto(request.user.perfil)
+            return redirect('index')
+    else:
+        form=ProdutoForm()
+    return render(request,'anunciar_produto.html',{'form':form})
+    
+@login_required
+def comprar_produto(request):
+    pass
+
+@login_required
+def depositar(request):
+    dinheiro=request.GET['dinheiro']
+    request.user.perfil.depositar_dinheiro(dinheiro)
+    return redirect('index')
+
 

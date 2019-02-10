@@ -53,8 +53,11 @@ urlpatterns = [
 
     path('perfil/adicionar_foto',views.adicionar_foto,name='adicionar_foto'),
     path('api-token-auth/', obtain_auth_token),
+    path('obter_token',views.criar_token,name='obter_token'),
 
     path('ver_perfil/<int:perfil_id>', views.ver_perfil, name='ver_perfil'),
+    path('anunciar_produto',views.anuciar_produto,name='anunciar_produto'),
+    path('depositar',views.depositar,name='depositar_dinheiro'),
 
 
      url(r'^reset-password/$', PasswordResetView.as_view( template_name='reset_password.html',

@@ -12,5 +12,16 @@
 		<a href = "{% url 'convidar' perfil.id %}">
 			Convidar
 		</a>
+
+		<div>
+		<h2>Produtos a venda</h2>
+		{%if perfil.produto.objects.all is empty%}
+			<h2>Este perfil não possui nenhum produto a venda<h2>
+		{%else%}
+		{%for p in perfil.produto.objects.all%}
+			<h4>{{p.nome_produto}}
+		{%endfor%}
+		{%endif%}
+		<div>
 </div>		
 {% endblock %}		

@@ -34,6 +34,17 @@
         </div>
     </nav>
 
+        <nav>
+     <a class="pull-right" href="{% url 'anunciar_produto' %}">Anunciar produto</a>
+    </nav>
+
+    <nav>
+<form method="GET" action="{% url 'depositar_dinheiro' %}">
+ <h4>Depositar dinheiro</h4>
+    <input type="number" placeholder="Depositar" aria-label="" name="dinheiro">
+    <button type="submit">Depositar</button> 
+</form>
+</nav>
 
 </div>
 <div class="col-md-6">
@@ -249,7 +260,6 @@
     </div>
 
 
-
-
+		</div>
 
     {% endblock %}

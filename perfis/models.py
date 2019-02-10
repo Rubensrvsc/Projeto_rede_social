@@ -11,6 +11,7 @@ class Perfil(models.Model):
     bloq = models.ManyToManyField('Perfil',related_name='bloqueado',null=True, blank=True)
     usuario = models.OneToOneField(User, related_name="perfil", on_delete = models.CASCADE,default="", editable=False)
     is_ativo = models.BooleanField(default=True)
+    dinheiro=models.FloatField(default=0)
 
     def __str__(self):
         return self.nome
@@ -18,6 +19,10 @@ class Perfil(models.Model):
     @property 
     def email(self): 
         return self.usuario.email
+
+    def depositar_dinheiro(self,qtd_dinheiro):
+        self.dinheiro+=int(qtd_dinheiro)
+        self.save()
 
     def desativar(self):
         self.is_ativo=False
@@ -84,3 +89,23 @@ class Post(models.Model):
 class Status(models.Model):
     perfil = models.OneToOneField(Perfil,on_delete=models.CASCADE)
     justificativa = models.CharField(max_length=256)
+
+#Anuciar vender produto
+class Produto(models.Model):
+    nome_produto=models.CharField(max_length=256)
+    preco=models.FloatField()
+    produto=models.ForeignKey(Perfil,related_name='produto',on_delete=models.CASCADE)
+    
+    def compra(self,perfil,qtd_dinheiro):
+        perfil.produto.dinheiro-=qtd_dinheiro
+        self.produto.dinheiro+=qtd_dinheiro
+        perfil.produto.add(self).save()
+        self.delete().save()
+    
+    def desconto(self,qtd_dinheiro):
+        self.produto.dinheiro-=qtd_dinheiro
+        self.produto.save()
+    
+    def salvar_produto(self,perfil):
+        self.produto=perfil
+        self.save()

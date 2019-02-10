@@ -16,3 +16,8 @@ class PhotoPerfil(ModelForm):
     class Meta:
         model = Perfil
         fields = ['photo']
+
+class ProdutoForm(ModelForm):
+    class Meta:
+        model = Produto
+        fields = ('nome_produto','preco',)
