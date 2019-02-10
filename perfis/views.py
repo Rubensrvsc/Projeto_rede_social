@@ -13,6 +13,16 @@ from django.contrib import messages
 from django.conf import settings
 from django.core.paginator import Paginator
 from django.db import transaction
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication,TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.decorators import api_view,permission_classes,authentication_classes
+from rest_framework.authtoken.models import Token
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from .serializers import *
+from rest_framework.response import Response
 
 @login_required
 def index(request):
@@ -41,16 +51,29 @@ def index(request):
         return render(request, 'index.html',{'perfis' : perfis,
         'posts':posts, 'usuarioLogado': usuarioLogado})
 
-@transaction.atomic
+@api_view(['GET'])
+#@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
 @login_required
 def exibir_perfil(request, perfil_id):
 
-
+    if request.method=='GET':
         perfil = Perfil.objects.get(id=perfil_id)
         if not request.user.perfil in perfil.bloq.all():
-            return render(request, 'perfil.html',{'perfil' : perfil, 'perfil_logado' : get_perfil_logado(request)})
+            perfil_serializer=PerfilSerializer(perfil)
+            return render(request, 'perfil.html',{'perfil' : perfil_serializer.data, 'perfil_logado' : get_perfil_logado(request)})
         else:
             return redirect('index')
+
+
+@api_view(['GET'])
+def ver_perfil(request, perfil_id):
+
+    if request.method=='GET':
+        perfil = Perfil.objects.get(id=perfil_id)
+        perfil_serializer=PerfilSerializer(perfil)
+        return Response(perfil_serializer.data)
+
 
 @login_required
 def convidar(request,perfil_id):
@@ -140,12 +163,15 @@ def exibir_timeline(request):
     else:
         return render(request,'erro.html')
 
+@api_view(['GET','POST'])
+@permission_classes((IsAuthenticated,))
 @login_required
 def incluir_post(request):
+    post_serializer=PostSerilizer(data=request.data)
     if request.method == 'POST':
         postform = PostForm(request.POST,request.FILES or None)
-        if postform.is_valid():
-            postinstance = postform.save(commit=False)
+        if postform.is_valid() and post_serializer.is_valid():
+            postinstance = post_serializer.save(commit=False)
             postinstance.timeline=request.user.perfil
             postinstance.save()
             return redirect('index')
@@ -153,10 +179,14 @@ def incluir_post(request):
         postform=PostForm()
     return render(request,'add_post.html',{'post':postform})
 
+@api_view(['GET','DELETE'])
+@permission_classes((IsAuthenticated,))
 @login_required
 def excluir_post(request,id_post):
-    Post.objects.filter(id=id_post).delete()
-    return redirect('index')
+    if request.method is not 'POST':
+        post_delete=Post.objects.filter(id=id_post)
+        post_delete.delete()
+        return redirect('index')
 
 @login_required
 def is_super_user(request,perfil_id):
@@ -209,3 +239,9 @@ def desativa_perfil(request):
 def reativar_perfil(request):
     request.user.perfil.reativar()
     return redirect('index')
+
+@login_required
+def criar_token(request):
+    Token.objects.get_or_create(user=request.user)
+    return redirect('index')
+

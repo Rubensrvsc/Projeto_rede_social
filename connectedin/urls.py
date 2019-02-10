@@ -25,6 +25,7 @@ PasswordResetConfirmView,PasswordResetCompleteView)
 from django.contrib.staticfiles.urls import static,staticfiles_urlpatterns
 from django.conf import settings
 from django.conf.urls.static import static
+from rest_framework.authtoken.views import obtain_auth_token
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -51,6 +52,9 @@ urlpatterns = [
     path('perfil/reativar',views.reativar_perfil,name='reativar_perfil'),
 
     path('perfil/adicionar_foto',views.adicionar_foto,name='adicionar_foto'),
+    path('api-token-auth/', obtain_auth_token),
+
+    path('ver_perfil/<int:perfil_id>', views.ver_perfil, name='ver_perfil'),
 
 
      url(r'^reset-password/$', PasswordResetView.as_view( template_name='reset_password.html',
@@ -62,7 +66,7 @@ urlpatterns = [
     success_url=reverse_lazy('password_reset_complete')), name='password_reset_confirm'),
 
     url(r'^reset-password/complete/$', PasswordResetCompleteView.as_view(template_name= 'reset_password_complete.html'), name='password_reset_complete')
-
+    
 ]
 if settings.DEBUG is True:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
