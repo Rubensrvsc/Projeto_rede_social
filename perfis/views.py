@@ -167,11 +167,10 @@ def exibir_timeline(request):
 @permission_classes((IsAuthenticated,))
 @login_required
 def incluir_post(request):
-    post_serializer=PostSerilizer(data=request.data)
     if request.method == 'POST':
         postform = PostForm(request.POST,request.FILES or None)
-        if postform.is_valid() and post_serializer.is_valid():
-            postinstance = post_serializer.save(commit=False)
+        if postform.is_valid() :
+            postinstance = postform.save(commit=False)
             postinstance.timeline=request.user.perfil
             postinstance.save()
             return redirect('index')
