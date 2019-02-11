@@ -15,27 +15,16 @@
 
 		<div>
 		<h2>Produtos a venda</h2>
-		{%if produto is empty%}
-			<h2>Este perfil não possui nenhum produto a venda<h2>
-		{%else%}
-		{%for p in produto%}
-			<h4>{{p.nome_produto}}</h4>
-			<h4>{{p.preco}}</h4>
-			{%if not perfil_logado%}
+
+			{%for p in produto%}
+				<h4>{{p.nome_produto}}</h4>
+				<h4>{{p.preco}}</h4>
 			<form method="GET" action="{% url 'comprar_produto' p.id %}">
- <h4>Comprar produto</h4>
-    <input type="number" placeholder="Depositar" aria-label="" name="dinheiro">
-    <button type="submit">Comprar</button> 
-</form>
-{%elif perfil_logado%}
-<form method="GET" action="{% url 'descontar_produto' p.id %}">
- <h4>Dar desconto</h4>
-    <input type="number" placeholder="Descontar" aria-label="" name="desconto">
-    <button type="submit">Desconto</button> 
-</form>
-{%endif%}
-		{%endfor%}
-		{%endif%}
+ 				<h4>Comprar produto</h4>
+    			<input type="number" placeholder="Comprar" aria-label="" name="comprar">
+    			<button type="submit">Comprar</button> 
+			</form>
+			{%endfor%}
 		<div>
 </div>		
 {% endblock %}		

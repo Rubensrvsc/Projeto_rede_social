@@ -97,10 +97,10 @@ class Produto(models.Model):
     produto=models.ForeignKey(Perfil,related_name='produto',on_delete=models.CASCADE)
     
     def compra(self,perfil,qtd_dinheiro):
-        perfil.produto.dinheiro-=qtd_dinheiro
-        self.preco+=qtd_dinheiro
-        perfil.produto.add(self).save()
-        self.delete().save()
+        perfil.dinheiro-=int(qtd_dinheiro)
+        self.produto.dinheiro+=int(qtd_dinheiro)
+        perfil.save()
+        self.delete()
     
     def desconto(self,qtd_dinheiro):
         self.preco-=int(qtd_dinheiro)

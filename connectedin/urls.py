@@ -58,7 +58,7 @@ urlpatterns = [
     path('ver_perfil/<int:perfil_id>', views.ver_perfil, name='ver_perfil'),
     path('anunciar_produto',views.anuciar_produto,name='anunciar_produto'),
     path('depositar',views.depositar,name='depositar_dinheiro'),
-    path('comprar/<int:perfil_id>/<int:produto_id>',views.comprar_produto,name='comprar_produto'),
+    path('comprar/<int:produto_id>',views.comprar_produto,name='comprar_produto'),
     path('descontar/<int:produto_id>',views.descontar_produto,name='descontar_produto'),
 
 

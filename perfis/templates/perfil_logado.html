@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class = "col-lg-12">
+		<h2 style="margin-top: 0px">{{ perfil.nome }}</h2>
+		<address>			
+			<a href = "mailto:{{ perfil.email }}">{{ perfil.email }}</a>
+			<br>
+			<strong>{{ perfil.nome_empresa }}</strong>
+		
+		</address>
+
+		<div>
+		<h2>Produtos a serem vendidos</h2>
+			{%for p in prod_logado%}
+				<h4>{{p.nome_produto}}</h4>
+				<h4>{{p.preco}}</h4>	
+		<form method="GET" action="{% url 'descontar_produto' p.id %}">
+ 			<h4>Dar desconto</h4>
+    		<input type="number" placeholder="Descontar" aria-label="" name="desconto">
+    		<button type="submit">Desconto</button> 
+		</form>
+		{%endfor%}
+		<div>
+</div>		
+{% endblock %}		
